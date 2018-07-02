@@ -21,7 +21,6 @@ const vis = {
 
   prepareData: function(data, queryResponse) {
     let fields = queryResponse.fields.dimension_like.concat(queryResponse.fields.measure_like);
-    console.log(fields);
     return data.map(function(d) {
       return fields.reduce(function(acc, cur) {
         acc[cur.label_short] = d[cur.name].value;
@@ -44,7 +43,6 @@ const vis = {
 
       // check first value of x axis
       let firstValueDim = Object.values(jsonData[0])[0];
-      console.log(firstValueDim);
       // check type and set in spec for dim (x axis)
       if (typeof(firstValueDim) == 'string') {
         this.options.spec.encoding.x.type = 'ordinal';
@@ -53,7 +51,6 @@ const vis = {
       }
 
       let firstValueMeas = Object.values(jsonData[0])[1];
-      console.log(firstValueMeas);
       // check type and set in spec for measure (y axis)
       if (typeof(firstValueMeas) == 'number') {
         this.options.spec.encoding.y.type = 'quantitative';
@@ -98,7 +95,6 @@ const vis = {
     const updateSpec = this.options.spec
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 
-    console.log(this.options.spec);
     // We are done rendering! Let Looker know.
     done()
   }

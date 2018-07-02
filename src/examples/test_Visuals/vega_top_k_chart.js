@@ -71,7 +71,7 @@ const vis = {
         {
           "scale": "x",
           "orient": "bottom",
-          "format": "$,d",
+          "format": ",d",
           "tickCount": 5
         },
         {

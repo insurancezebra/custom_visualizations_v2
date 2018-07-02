@@ -67,7 +67,6 @@ const vis = {
     } if (Object.keys(jsonData[0]).length < 3) {
       this.addError({title: "Too few dimensions/measures", message: "This chart handles 1 dimension and 2 measures."});
     } else {
-      console.log(Object.keys(jsonData[0])[0]);
       // set x & y for the bar graph
       this.options.spec.layer[0].encoding.x.field = Object.keys(jsonData[0])[0];
       this.options.spec.layer[0].encoding.y.field = Object.keys(jsonData[0])[1];
@@ -108,7 +107,6 @@ const vis = {
       "values": jsonData,
     };
     this.prepareChartArea(jsonData);
-    console.log(this.options.spec);
     const updateSpec = this.options.spec;
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 
