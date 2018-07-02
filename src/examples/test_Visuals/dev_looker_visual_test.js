@@ -1,6 +1,6 @@
 const vis = {
   id: "dev_vega_visual_test",
-  label: "Dev - Test Vega Visual - Box Plot",
+  label: "Dev - Test Vega Visual - Grouped Bar",
   options: {
     spec: {
       "$schema": "https://vega.github.io/schema/vega/v4.json",
