@@ -18,9 +18,11 @@ const vis = {
     },
   },
 
-
+  // format data into vega friendly format
   prepareData: function(data, queryResponse) {
+    // get fields selected by user and map to their values
     let fields = queryResponse.fields.dimension_like.concat(queryResponse.fields.measure_like);
+    // format into vega friendly format, returns dict
     return data.map(function(d) {
       return fields.reduce(function(acc, cur) {
         acc[cur.label_short] = d[cur.name].value;
@@ -29,10 +31,13 @@ const vis = {
     })
   },
 
+  // prepare the spec document with data chosen by user
   prepareChartArea: function(jsonData) {
-
+    // check number of dimensions & measures selected are appropriate to the graph
     if (Object.keys(jsonData[0]).length > 2) {
       this.addError({title: "Too many dimensions/measures", message: "This chart handles 1 measure + 1 dimension."});
+    } if (Object.keys(jsonData[0]).length < 2) {
+      this.addError({title: "Too few dimensions/measures", message: "This chart handles 1 measure and 1 dimension."});
     } else {
       // add field name to x + y axis encoding
       this.options.spec.encoding.x.field = Object.keys(jsonData[0])[0];
@@ -70,6 +75,7 @@ const vis = {
 
     element.parentNode.appendChild(vegaVisual);
   },
+
   // Render in response to the data or settings changing
   updateAsync(data, element, config, queryResponse, details, done) {
 
@@ -92,6 +98,8 @@ const vis = {
     this.options.spec.data = {
       values: jsonData,
     };
+
+    // get updated spec and use with vega embed
     const updateSpec = this.options.spec
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 

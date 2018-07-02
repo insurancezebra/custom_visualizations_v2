@@ -81,9 +81,12 @@ const vis = {
       ]
     },
   },
+
+  // format data into vega friendly format
   prepareData: function(data, queryResponse) {
     // get fields selected by user and map to their values
     let fields = queryResponse.fields.dimension_like.concat(queryResponse.fields.measure_like);
+    // format into vega friendly format, returns dict
     return data.map(function(d) {
       return fields.reduce(function(acc, cur) {
         acc[cur.label_short] = d[cur.name].value;
@@ -97,7 +100,8 @@ const vis = {
     return self.indexOf(value) === index;
   },
 
-  // prepare the spec document with data chosen by user
+  // prepare vega spec with data chosen by user if necessary
+  // check to see if measures / dimensions have been selected
   prepareChartArea: function(jsonData) {
     // check number of dimensions & measures selected are appropriate to the graph
     if (Object.keys(jsonData[0]).length > 2) {
@@ -116,6 +120,7 @@ const vis = {
       // set sort field for y scale
       this.options.spec.scales[1].domain.sort.field = Object.keys(jsonData[0])[1];
 
+      // set title of chart
       this.options.spec.title.text = `Top ${this.options.spec.marks[0].encode.update.y.field} by ${this.options.spec.marks[0].encode.update.x2.field}`;
     }
   },
@@ -160,12 +165,18 @@ const vis = {
             }
           ]
     };
+
+    // prepare vega spec
     this.prepareChartArea(jsonData);
+
+    // get updated spec and use with vega embed
     const updateSpec = this.options.spec;
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 
+    // update min and max range of top k chart if user changes options
     this.options.spec.signals[0].bind.min = config.k_range_min;
     this.options.spec.signals[0].bind.max = config.k_range_max;
+
     // We are done rendering! Let Looker know.
     done()
   }

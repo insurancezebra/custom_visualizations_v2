@@ -43,20 +43,18 @@ const vis = {
       "resolve": {"scale": {"y": "independent"}}
     },
   },
+
+  // format data into vega friendly format
   prepareData: function(data, queryResponse) {
     // get fields selected by user and map to their values
     let fields = queryResponse.fields.dimension_like.concat(queryResponse.fields.measure_like);
+    // format into vega friendly format, returns dict
     return data.map(function(d) {
       return fields.reduce(function(acc, cur) {
         acc[cur.label_short] = d[cur.name].value;
         return acc
       }, {});
     })
-  },
-
-  // user with filter() to reduce array of keys to their distinct values
-  reduceKeys: function(value, index, self) {
-    return self.indexOf(value) === index;
   },
 
   // prepare the spec document with data chosen by user
@@ -106,7 +104,11 @@ const vis = {
       "name": "data",
       "values": jsonData,
     };
+
+    // prepare vega spec
     this.prepareChartArea(jsonData);
+
+    // get updated spec and use with vega embed
     const updateSpec = this.options.spec;
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 

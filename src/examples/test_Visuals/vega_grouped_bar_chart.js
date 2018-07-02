@@ -1,7 +1,4 @@
 const vis = {
-  // Id and Label are legacy properties that no longer have any function besides documenting
-  // what the visualization used to have. The properties are now set via the manifest
-  // form within the admin/visualizations page of Looker
   id: "dev_vega_visual_test",
   label: "Dev - Test Vega Visual - Box Plot",
   options: {
@@ -107,8 +104,11 @@ const vis = {
     },
   },
 
+  // format data into vega friendly format
   prepareData: function(data, queryResponse) {
+    // get fields selected by user and map to their values
     let fields = queryResponse.fields.dimension_like.concat(queryResponse.fields.measure_like);
+    // format into vega friendly format, returns dict
     return data.map(function(d) {
       return fields.reduce(function(acc, cur) {
         acc[cur.label_short] = d[cur.name].value;
@@ -117,28 +117,26 @@ const vis = {
     })
   },
 
+  // adjust data to work in conjunction with the grouped bar data spec, returns list
   groupedBarDataFix: function(data) {
-      return data.reduce((a, c) => {
-        values = Object.values(c);
-        values.shift();
-        let p = 0
-        for (let x in values) {
-          a.push({"category": Object.values(c)[0], "position": p, "value": values[x].toFixed(2)})
-          p+=1
-        }
+    return data.reduce((a, c) => {
+      values = Object.values(c);
+      values.shift();
+      let p = 0
+      for (let x in values) {
+        a.push({"category": Object.values(c)[0], "position": p, "value": values[x].toFixed(2)})
+        p+=1
+      }
       return a
       }, [])
     },
 
-  reduceKeys: function(value, index, self) {
-    return self.indexOf(value) === index;
-  },
-
+  // prepare vega spec with data chosen by user if necessary
+  // check to see if measures / dimensions have been selected
   prepareChartArea: function(jsonData) {
     if (Object.keys(jsonData[0]).length < 2) {
       this.addError({title: "Too few dimensions/measures", message: "This chart handles 1 dimension and multiple measures."});
     } else {
-      // add field name signal and marks - data transform in vega spec
     }
   },
 
@@ -173,8 +171,10 @@ const vis = {
       "values": groupedBarData,
     }];
 
+    // prepare vega spec
     this.prepareChartArea(jsonData);
-    console.log(this.options.spec);
+
+    // get updated spec and use with vega embed
     const updateSpec = this.options.spec
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
 
