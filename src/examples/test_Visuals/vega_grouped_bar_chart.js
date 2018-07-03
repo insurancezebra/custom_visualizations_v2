@@ -136,7 +136,6 @@ const vis = {
   prepareChartArea: function(jsonData) {
     if (Object.keys(jsonData[0]).length < 2) {
       this.addError({title: "Too few dimensions/measures", message: "This chart handles 1 dimension and multiple measures."});
-    } else {
     }
   },
 
