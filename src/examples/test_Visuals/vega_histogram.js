@@ -89,7 +89,7 @@ const vis = {
       this.addError({title: "Too many dimensions/measures", message: "This chart handles 1 dimension."});
     } else {
         // assign key to x field in vega spec
-        let key = Object.keys(jsonData[0])[0]
+        let key = Object.keys(jsonData[0])[0];
         this.options.spec.marks[1].encode.enter.x.field = key;
 
         // get information about data (min, max, count etc) to set vega spec for histogram correctly
@@ -100,19 +100,17 @@ const vis = {
         maxValue = Math.max(...arrayValues);
         minValue = Math.min(...arrayValues);
         numValues = arrayValues.length;
-        console.log(arrayValues);
-
 
         // set range of values and default value for histogram in vega spec
         this.options.spec.signals[0].bind.min = minValue;
         this.options.spec.signals[0].bind.max = maxValue;
-        this.options.spec.signals[0].value = (maxValue - minValue) / 3;
+        this.options.spec.signals[0].value = (maxValue - minValue) / 2;
 
         // set step and default value for bins
         this.options.spec.signals[1].bind.min = 0;
         this.options.spec.signals[1].bind.max = numValues;
-        this.options.spec.signals[1].value = numValues / 3;
-        this.options.spec.signals[1].bind.step = numValues / 20;
+        this.options.spec.signals[1].value = numValues / 2;
+        this.options.spec.signals[1].bind.step = numValues / 25;
 
         // set extent for data in vega spec
         this.options.spec.data[1].transform[0].extent = [minValue, maxValue];
