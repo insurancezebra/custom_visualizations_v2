@@ -57,12 +57,24 @@ const vis = {
     } else {
         // set field and type for x axis in vega spec
         this.options.spec.encoding.x.field = Object.keys(jsonData[0])[0]
-        this.options.spec.encoding.x.type = (typeof Object.values(jsonData[0])[0] == 'string') ? 'ordinal' : 'quantitative'
+        this.options.spec.encoding.x.type = (typeof Object.values(jsonData[0])[0] == 'string') ? 'ordinal' : 'quantitative';
 
+        // list to check for day of week in data
+        daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+        // check for day of week, allow user to sort within Looker rather than having vega sort
+        if (daysOfWeek.includes(Object.values(jsonData[0])[0])) {
+          this.options.spec.encoding.x.sort = null;
+        }
 
         // set field and type for y axis in vega spec
         this.options.spec.encoding.y.field = Object.keys(jsonData[0])[1]
         this.options.spec.encoding.y.type = (typeof Object.values(jsonData[0])[1] == 'string') ? 'ordinal' : 'quantitative'
+
+        // check for day of week, allow user to sort within Looker rather than having vega sort
+        if (daysOfWeek.includes(Object.values(jsonData[0])[1])) {
+          this.options.spec.encoding.y.sort = null;
+        }
 
         // set field and type for color in vega spec
         this.options.spec.encoding.color.field = Object.keys(jsonData[0])[2]
@@ -99,11 +111,11 @@ const vis = {
 
     // prepare vega spec
     this.prepareChartArea(jsonData);
-
+    console.log(this.options.spec);
     // get updated spec and use with vega embed
     const updateSpec = this.options.spec
     vegaEmbed('#vis', updateSpec, {defaultStyle: true}).catch(console.warn);
-    console.log(this.options.spec);
+
     // We are done rendering! Let Looker know.
     done()
   }
